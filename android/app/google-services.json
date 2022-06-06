@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "566918146752",
+    "project_id": "app-station2022",
+    "storage_bucket": "app-station2022.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566918146752:android:b91b2935d8ff3ce08ddb25",
+        "android_client_info": {
+          "package_name": "com.example.station_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "566918146752-tme5sftkgi49vh619jhapd9q7u0sjfb2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDf1Q0KwYVuCj05Tv8ZPjBjas2N3pO_fI8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566918146752-tme5sftkgi49vh619jhapd9q7u0sjfb2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
