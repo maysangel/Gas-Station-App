@@ -3,10 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart' ;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart' ;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:station_app/NavBar.dart';
 import 'package:station_app/login.dart';
-import 'package:station_app/tabDistance.dart';
 
 class MyMap extends StatefulWidget {
   const MyMap({Key? key}) : super(key: key);
@@ -55,9 +54,10 @@ class _MyMapState extends State<MyMap> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () => showDialogIfFirstLoaded(context));
+    Future.delayed(Duration.zero, () => showAlert(context));
     return SafeArea(
         child: Scaffold(
+          drawer: const NavBar(),
       appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.primary,
             title: Row(
@@ -68,11 +68,6 @@ class _MyMapState extends State<MyMap> {
                   ),
                 ]),
             actions: [
-              IconButton(
-                  onPressed: () {
-                    tabDistance(cont, title: 'Tableau Distance',);
-                  },
-                  icon: const Icon(Icons.map_outlined)),
               IconButton(
                 onPressed: () {
                   logout(context);
@@ -105,18 +100,14 @@ class _MyMapState extends State<MyMap> {
   } // Widget
 }
 
-showDialogIfFirstLoaded(BuildContext context) async {
-  const keyIsFirstLoaded = 'is_first_loaded';
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool? isFirstLoaded = prefs.getBool(keyIsFirstLoaded);
-  if (isFirstLoaded == null) {
+showAlert(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
           title: const Text("Permission status"),
-          content: const Text("Vérification de la permission d'accès a la localisation."),
+          content: const Text("Vérification de la permission d'accès à la localisation."),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
         TextButton(
@@ -132,7 +123,6 @@ showDialogIfFirstLoaded(BuildContext context) async {
       },
     );
   }
-}
 
 Future<void> checkPermission() async {
 
@@ -167,17 +157,3 @@ Future<void> logout(BuildContext context) async {
     ),
   );
 }
-
-
-Future<void> distance(BuildContext cont) async {
-  const CircularProgressIndicator();
-  Navigator.of(cont).pop(
-    MaterialPageRoute(
-      builder: (cont) => const tabDistance('Tab Distance', title: 'tab')
-    ),
-  );
-}
-
-
-
-

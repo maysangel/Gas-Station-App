@@ -1,49 +1,64 @@
 // ignore_for_file: avoid_print
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:station_app/NavBar.dart';
+import 'package:station_app/ajouter.dart';
 import 'package:station_app/bienvenue.dart';
+import 'package:station_app/mapadmin.dart';
 
-class AdminMap extends StatefulWidget {
-  const AdminMap({Key? key}) : super(key: key);
+class MapTap extends StatefulWidget {
+  const MapTap({Key? key}) : super(key: key);
   @override
-  State<AdminMap> createState() => _AdminMapState();
+  State<MapTap> createState() => _MapTapState();
 }
 
-class _AdminMapState extends State<AdminMap> {
+class _MapTapState extends State<MapTap> {
   final Completer<GoogleMapController> _controller = Completer();
   List<Marker> markers = [];
-
   int id = 1;
+  String stationId = DateTime.now().millisecondsSinceEpoch.toString();
+  late double latitude;
+  late double longitude;
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController prixg = TextEditingController();
+  final TextEditingController prixe = TextEditingController();
+  final TextEditingController _station = TextEditingController();
+  final TextEditingController _address = TextEditingController();
 
-  @override
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () => showAlert(context));
     return SafeArea(
       child: Scaffold(
-        drawer: const NavBar(),
         appBar: AppBar(
-          backgroundColor: Colors.lightBlue,
-          title:
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
-            Text(
-              "Gas Station Map",
-              style: TextStyle(color: Colors.white),
-            ),
-          ]),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const bienvenu()));
-              },
-              icon: const Icon(Icons.arrow_forward_sharp),
-            ),
-          ],
-        ),
+            backgroundColor: const Color.fromARGB(255, 2, 35, 84),
+            title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text(
+                    "Gas Station Map",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ]),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const bienvenu(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.person),
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => const mapAdmin()));
+                },
+                icon: const Icon(Icons.map),
+              ),
+            ]),
         body: Stack(
           children: [
             GoogleMap(
@@ -59,10 +74,116 @@ class _AdminMapState extends State<AdminMap> {
                   position: LatLng(latlng.latitude, latlng.longitude),
                   icon: BitmapDescriptor.defaultMarkerWithHue(0),
                 );
+                longitude = newMarker.position.longitude;
+                latitude = newMarker.position.latitude;
                 markers.add(newMarker);
                 id = id + 1;
                 setState(() {});
                 print("Vous avez taper sur $latlng");
+                showDialog(
+                    context: context,
+                    builder: (context) => Dialog(
+                      child: Container(
+                        height: 500,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage('assets/images/font.jpg'),
+                              fit: BoxFit.cover),
+                        ),
+                        padding: const EdgeInsets.all(15),
+                        child:
+                        Stack(alignment: Alignment.center, children: [
+                          SingleChildScrollView(
+                            child: Form(
+                              key: _formKey,
+                              child: Column(children: [
+                                TextFormField(
+                                  controller: _station,
+                                  decoration: InputDecoration(
+                                    hintText: 'Entrez Nom de la station',
+                                    prefixIcon: const Icon(Icons.gas_meter),
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                TextFormField(
+                                  controller: _address,
+                                  decoration: InputDecoration(
+                                    hintText:
+                                    "Entrez l'adresse de la station",
+                                    prefixIcon: const Icon(Icons.home),
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                TextFormField(
+                                  controller: prixg,
+                                  decoration: InputDecoration(
+                                    prefixIcon:
+                                    const Icon(Icons.price_check),
+                                    hintText: 'Prix Gasoil',
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                TextFormField(
+                                  controller: prixe,
+                                  decoration: InputDecoration(
+                                    prefixIcon:
+                                    const Icon(Icons.price_check),
+                                    hintText: 'Prix Essence',
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      setState(() {
+                                        tapStation();
+                                      });
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        40, 15, 40, 15),
+                                    shadowColor: Colors.white,
+                                    primary: const Color.fromARGB(
+                                        255, 242, 241, 245),
+                                  ),
+                                  child: const Text(
+                                    'Ajouter',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ]),
+                            ),
+                          ),
+                        ]),
+                      ),
+                    ));
               },
               initialCameraPosition: const CameraPosition(
                 target: LatLng(33.971588, -6.849813),
@@ -78,49 +199,22 @@ class _AdminMapState extends State<AdminMap> {
       ),
     );
   } // Widget
-}
 
-showAlert(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      // return object of type Dialog
-      return AlertDialog(
-        title: const Text("Permission status"),
-        content: const Text(
-            "Vérification de la permission d'accès à la localisation."),
-        actions: <Widget>[
-          // usually buttons at the bottom of the dialog
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'Cancel'),
-            child: const Text('Annuler'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, checkPermission()),
-            child: const Text('Vérifier'),
-          ),
-        ],
-      );
-    },
-  );
-}
-
-Future<void> checkPermission() async {
-  final serviceStatus = await Permission.locationWhenInUse.serviceStatus;
-  final isGpsOn = serviceStatus == ServiceStatus.enabled;
-
-  if (!isGpsOn) {
-    print('Turn on location services before requesting permission.');
-    return;
-  }
-  final status = await Permission.locationWhenInUse.request();
-
-  if (status == PermissionStatus.granted) {
-    print('Permission granted');
-  } else if (status == PermissionStatus.denied) {
-    print('Permission denied. Show a dialog and again ask for the permission');
-  } else if (status == PermissionStatus.permanentlyDenied) {
-    print('Take the user to the settings page.');
-    await openAppSettings();
+  void tapStation() async {
+    final prixa = double.parse(prixe.text);
+    final prixb = double.parse(prixg.text);
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    await firebaseFirestore.collection("stations").doc(stationId).set({
+      'nom station': _station.text,
+      'adresse': _address.text,
+      'locations': GeoPoint(latitude, longitude),
+      'prix gasoil': prixb,
+      'prix essence': prixa,
+    }).whenComplete(() => Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const ajoute(),
+      ),
+    ));
+    // ignore: use_build_context_synchronously
   }
 }

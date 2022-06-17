@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.2"
+  basic_utils:
+    dependency: "direct main"
+    description:
+      name: basic_utils
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.2.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -64,13 +71,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.16.0"
+  convert:
+    dependency: transitive
+    description:
+      name: convert
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.2"
   cupertino_icons:
     dependency: "direct main"
     description:
       name: cupertino_icons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.5"
+  custom_info_window:
+    dependency: "direct main"
+    description:
+      name: custom_info_window
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   email_validator:
     dependency: "direct main"
     description:
@@ -190,14 +211,14 @@ packages:
       name: geolocator_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.8"
+    version: "3.2.0"
   geolocator_apple:
     dependency: transitive
     description:
       name: geolocator_apple
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.4"
+    version: "2.2.0"
   geolocator_platform_interface:
     dependency: transitive
     description:
@@ -225,14 +246,14 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.7"
+    version: "2.1.8"
   google_maps_flutter_platform_interface:
     dependency: transitive
     description:
       name: google_maps_flutter_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.7"
+    version: "2.2.0"
   http:
     dependency: transitive
     description:
@@ -261,6 +282,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.4"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.5.0"
   lints:
     dependency: transitive
     description:
@@ -268,6 +296,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  logging:
+    dependency: transitive
+    description:
+      name: logging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   matcher:
     dependency: transitive
     description:
@@ -330,14 +365,14 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.2.0"
+    version: "10.0.0"
   permission_handler_android:
     dependency: transitive
     description:
       name: permission_handler_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.0.2+1"
+    version: "10.0.0"
   permission_handler_apple:
     dependency: transitive
     description:
@@ -373,6 +408,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
+  pointycastle:
+    dependency: transitive
+    description:
+      name: pointycastle
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.6.0"
   process:
     dependency: transitive
     description:

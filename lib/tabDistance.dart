@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, camel_case_types
+// ignore_for_file: file_names, camel_case_types, avoid_print, empty_catches
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -12,94 +12,86 @@ class tabDistance extends StatefulWidget {
 }
 
 class _tabDistanceState extends State<tabDistance> {
+  List stationslist = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDatabaseList();
+  }
+
+  fetchDatabaseList() async {
+    dynamic resultat = await getData();
+    if (resultat == null) {
+      print('error');
+    } else {
+      setState(() {
+        stationslist = resultat;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        //child: _getData01(_userTransactionList, context)
-        child: DataTable(
-          columnSpacing: 30.0,
-          columns: const <DataColumn>[
-            DataColumn(
-              label: Text(
-                'Nom Station',
-                style: TextStyle(
-    color: Colors.blue,
-    fontWeight: FontWeight.bold,
-    fontStyle: FontStyle.italic,
-    ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title:
+        Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+          Text(
+            "Distance ",
+            style: TextStyle(color: Colors.white),
+          ),
+        ]),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                stationslist = stationslist.reversed.toList();
+              });
+            },
+            icon: const Icon(Icons.sort),
+          ),
+        ]),
+      body: ListView.builder(
+          itemCount: stationslist.length,
+          itemBuilder: (context, index) {
+            return Card(
+              child: ListTile(
+                title: Text(stationslist[index]['nom station']),
+                trailing:
+                Text('${stationslist[index]['locations']} Km'),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                'Age',
-                style: TextStyle(
-    color: Colors.blue,
-    fontWeight: FontWeight.bold,
-    fontStyle: FontStyle.italic,
-    ),
-              ),
-            ),
-          ],
-          rows: const [],
-        ),
+            );
+          }),
     );
   }
-}
+  }
 
-getMarkerDistance() {
-  FirebaseFirestore.instance.collection('stations').get().then(
-          (QuerySnapshot querySnapshot) {
-        // ignore: avoid_function_literals_in_foreach_calls
-        querySnapshot.docs.forEach((doc) {
-          calculDistance(doc.data(), doc.id);
-        });
-      });
-}
 
-calculDistance(specify,specifyId) async {
-  Position currentPosition = await determinePosition();
-  var markerIdVal = specifyId ;
-  final MarkerId markerId = MarkerId(markerIdVal) ;
-  final Marker marker = Marker(
-    markerId : markerId ,
-    position : LatLng (
-        specify['locations'].latitude ,specify['locations'].longitude ),
-    infoWindow: InfoWindow(
-        title : specify['nom station']),
-  );
-  var lat = marker.position.latitude;
-  var lng = marker.position.longitude;
-  var nom = marker.infoWindow.title;
-  var distanceInMeters = Geolocator.distanceBetween(
-    lat, lng, currentPosition.latitude, currentPosition.longitude,
-  );
-  List<List<dynamic>> distances = [
-    [nom , distanceInMeters],
-  ];
-  // ignore: avoid_print
-  print(distances)  ;
-}
+Future getData() async {
+  List itemsList = [];
+            try {
+              await FirebaseFirestore.instance.collection('stations').orderBy('locations').get().then(
+                      (QuerySnapshot querySnapshot) async {
+                for (var element in querySnapshot.docs) {
+                  itemsList.add(element.data());
+                  GeoPoint geoPoint = element.get('locations');
+                  Position currentPosition = await determinePosition();
+                  var distanceInMeters = Geolocator.distanceBetween(
+                      geoPoint.latitude, geoPoint.longitude, currentPosition.latitude, currentPosition.longitude);
+                  var distanceInKilometres = distanceInMeters*1000 ;
+                  itemsList.add(distanceInKilometres);
+                 
+                }});
+  } catch(e) {}
+  return itemsList;
+          }
 
 
 Future<Position> determinePosition() async {
-  bool serviceEnabled;
-  LocationPermission permission;
-
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    return Future.error('Location services are disabled');  // Service disabled
-  }
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      return Future.error("Location permission denied");  // Permission denied
-    }
-  }
-  if (permission == LocationPermission.deniedForever) {
-    return Future.error('Location permissions are permanently denied');
-  }
   Position currentPosition = await Geolocator.getCurrentPosition();
   return currentPosition;
 }
