@@ -13,6 +13,7 @@ We first start with a *"Sign In"* page as displayed, with features such as **"Fo
 ### Users Map
 After logging in with the correct credentials, *the map* used through a *google maps package* and *API keys* , is displayed after accessing the user's location, with all the markers existing in the Firebase Database, for each one its own name and price.
 We can also order them by different gas prices, ascending or descending order.
+The user chooses the station he wants, and an itinerary option (provided by the package) shows so he would follow those directions to reach his destinations.
 
 ![perms](https://user-images.githubusercontent.com/106128760/179071361-bc6c7618-9aef-4013-9c35-ce61f0987511.jpeg)
 
