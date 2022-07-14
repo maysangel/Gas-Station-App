@@ -21,15 +21,17 @@ class _mapAdminState extends State<mapAdmin> {
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
   void initMarker(specify, specifyId) async {
+    var es = specify['prix essence'].toString();
+    var gs = specify['prix gasoil'].toString();
     var markerIdVal = specifyId;
     final MarkerId markerId = MarkerId(markerIdVal);
-
     final Marker marker = Marker(
       markerId: markerId,
       position:
       LatLng(specify['locations'].latitude, specify['locations'].longitude),
-      infoWindow:
-      InfoWindow(title: specify['nom station'], snippet: 'Bienvenue'),
+      infoWindow: InfoWindow(
+          title: specify['nom station'],
+          snippet : "Essence: $es - Gasoil: $gs"),
       icon: BitmapDescriptor.defaultMarkerWithHue(0),
     );
     setState(() {

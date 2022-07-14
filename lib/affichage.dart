@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:station_app/bienvenue.dart';
-import 'package:station_app/main.dart';
 import 'package:station_app/mapadmin.dart';
 
 class affichage extends StatefulWidget {

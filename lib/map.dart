@@ -20,6 +20,8 @@ class _MyMapState extends State<MyMap> {
   get cont => null;
 
   void initMarker (specify,specifyId) async {
+    var es = specify['prix essence'].toString();
+    var gs = specify['prix gasoil'].toString();
     var markerIdVal = specifyId ;
     final MarkerId markerId = MarkerId(markerIdVal) ;
     final Marker marker = Marker(
@@ -28,7 +30,7 @@ class _MyMapState extends State<MyMap> {
           specify['locations'].latitude ,specify['locations'].longitude ) ,
       infoWindow : InfoWindow (
           title : specify['nom station'] ,
-          snippet : specify['prix essence''prix gasoil']),
+          snippet : "Essence: $es - Gasoil: $gs"),
           icon: BitmapDescriptor.defaultMarkerWithHue(0) ,
     );
     setState(() {

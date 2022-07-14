@@ -72,6 +72,7 @@ class _MapTapState extends State<MapTap> {
                 Marker newMarker = Marker(
                   markerId: MarkerId('$id'),
                   position: LatLng(latlng.latitude, latlng.longitude),
+
                   icon: BitmapDescriptor.defaultMarkerWithHue(0),
                 );
                 longitude = newMarker.position.longitude;
